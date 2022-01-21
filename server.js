@@ -1,23 +1,27 @@
-const PORT = 5300;
+'use strict';
+const forzaPort = 5300;
 const HOST = "0.0.0.0";
 
 const dgram = require("dgram");
-const server = dgram.createSocket("udp4");
+const udpserver = dgram.createSocket("udp4");
 
-const express = require('express')
-const app = express()
-const port = process.env.PORT || 3000
+const express = require('express');
+const {Server} = require('ws');
 
-/*
-    Incase you are using mongodb atlas database uncomment below line
-    and replace "mongoAtlasUri" with your mongodb atlas uri.
-*/
-// mongoose.connect( mongoAtlasUri, {useNewUrlParser: true, useUnifiedTopology: true})
+const PORT = process.env.PORT || 3000;
+const INDEX = '/index.html';
 
+const server = express()
+    .use((req, res) => res.sendFile(INDEX, {root: __dirname}))
+    .listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+const wss = new Server({server});
+
+var data = "test";
 
 let forza_data = [
     {
-        //buf
+
         isRaceOn: false,
         TimestampMs: 0,
         EngineMaxRpm: 0,
@@ -77,7 +81,6 @@ let forza_data = [
         DriveTrain: 0,
         NumCylinders: 0,
 
-        // dash buf
         PositionX: 0,
         PositionY: 0,
         PositionZ: 0,
@@ -108,12 +111,9 @@ let forza_data = [
     },
 ];
 
-//FH4/FH5 buffer offset
-
-const bufferOffset = 12;
 
 function dataParser(message) {
-    forza_data[0].isRaceOn = message.readInt32LE(0) ? true : false;
+    forza_data[0].isRaceOn = !!message.readInt32LE(0);
     forza_data[0].TimestampMs = message.readUInt32LE(4);
     forza_data[0].EngineMaxRpm = message.readFloatLE(8);
     forza_data[0].EngineIdleRpm = message.readFloatLE(12);
@@ -171,63 +171,54 @@ function dataParser(message) {
     forza_data[0].CarPerformanceIndex = message.readInt32LE(220);
     forza_data[0].DriveTrain = message.readInt32LE(224);
     forza_data[0].NumCylinders = message.readInt32LE(228);
+    forza_data[0].CarCategory = message.readInt32LE(232);
 
-    // dashboard
-    forza_data[0].PositionX = message.readFloatLE(232 + bufferOffset);
-    forza_data[0].PositionY = message.readFloatLE(236 + bufferOffset);
-    forza_data[0].PositionZ = message.readFloatLE(240 + bufferOffset);
-    forza_data[0].Speed = message.readFloatLE(244 + bufferOffset);
-    forza_data[0].Power = message.readFloatLE(248 + bufferOffset);
-    forza_data[0].Torque = message.readFloatLE(252 + bufferOffset);
-    forza_data[0].TireTempFl = message.readFloatLE(256 + bufferOffset);
-    forza_data[0].TireTempFr = message.readFloatLE(260 + bufferOffset);
-    forza_data[0].TireTempRl = message.readFloatLE(264 + bufferOffset);
-    forza_data[0].TireTempRr = message.readFloatLE(268 + bufferOffset);
-    forza_data[0].Boost = message.readFloatLE(272 + bufferOffset);
-    forza_data[0].Fuel = message.readFloatLE(276 + bufferOffset);
-    forza_data[0].Distance = message.readFloatLE(280 + bufferOffset);
-    forza_data[0].BestLapTime = message.readFloatLE(284 + bufferOffset);
-    forza_data[0].LastLapTime = message.readFloatLE(288 + bufferOffset);
-    forza_data[0].CurrentLapTime = message.readFloatLE(292 + bufferOffset);
-    forza_data[0].CurrentRaceTime = message.readFloatLE(296 + bufferOffset);
-    forza_data[0].Lap = message.readUInt16LE(300 + bufferOffset);
-    forza_data[0].RacePosition = message.readUInt8(302 + bufferOffset);
-    forza_data[0].Accelerator = message.readUInt8(303 + bufferOffset);
-    forza_data[0].Brake = message.readUInt8(304 + bufferOffset);
-    forza_data[0].Clutch = message.readUInt8(305 + bufferOffset);
-    forza_data[0].Handbrake = message.readUInt8(306 + bufferOffset);
-    forza_data[0].Gear = message.readUInt8(307 + bufferOffset);
-    forza_data[0].Steer = message.readUInt8(308 + bufferOffset);
-    forza_data[0].NormalDrivingLine = message.readUInt8(309 + bufferOffset);
-    forza_data[0].NormalAiBrakeDifference = message.readUInt8(310 + bufferOffset);
+    forza_data[0].PositionX = message.readFloatLE(244);
+    forza_data[0].PositionY = message.readFloatLE(248);
+    forza_data[0].PositionZ = message.readFloatLE(252);
+    forza_data[0].Speed = message.readFloatLE(256);
+    forza_data[0].Power = message.readFloatLE(260);
+    forza_data[0].Torque = message.readFloatLE(264);
+    forza_data[0].TireTempFl = message.readFloatLE(268);
+    forza_data[0].TireTempFr = message.readFloatLE(272);
+    forza_data[0].TireTempRl = message.readFloatLE(276);
+    forza_data[0].TireTempRr = message.readFloatLE(280);
+    forza_data[0].Boost = message.readFloatLE(284);
+    forza_data[0].Fuel = message.readFloatLE(288);
+    forza_data[0].Distance = message.readFloatLE(292);
+    forza_data[0].BestLapTime = message.readFloatLE(300);
+    forza_data[0].LastLapTime = message.readFloatLE(304);
+    forza_data[0].CurrentLapTime = message.readFloatLE(308);
+    forza_data[0].CurrentRaceTime = message.readFloatLE(312);
+    forza_data[0].Lap = message.readUInt16LE(314);
+    forza_data[0].RacePosition = message.readUInt8(315);
+    forza_data[0].Accelerator = message.readUInt8(316);
+    forza_data[0].Brake = message.readUInt8(317);
+    forza_data[0].Clutch = message.readUInt8(318);
+    forza_data[0].Handbrake = message.readUInt8(319);
+    forza_data[0].Gear = message.readUInt8(320);
+    forza_data[0].Steer = message.readUInt8(321);
+    forza_data[0].NormalDrivingLine = message.readUInt8(322);
+    forza_data[0].NormalAiBrakeDifference = message.readUInt8(323);
 }
 
 
-app.get('/', (req, res) => {
-    res.write("test");
-    server.bind(PORT, HOST);
-    res, end();
-});
-
-app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`)
-});
-
-server.on("message", function (message, remote) {
+udpserver.on("message", function (message) {
     dataParser(message);
-    if (forza_data[0].isRaceOn) {
-        console.log("\x1b[31m", "RPM : " + parseInt(forza_data[0].CurrentEngineRpm) + " | Gear: " + forza_data[0].Gear + " | Speed: " + parseInt((forza_data[0].Speed) * (60 * 60) / 1000) + "km/h | Steer: " + forza_data[0].Steer);
-    }
-});
+    data = ("Timestamp: " + (forza_data[0].TimestampMs) + "\nOrdinal: " + parseInt(forza_data[0].CarOrdinal));
+       wss.clients.forEach((client) => {
+    client.send(data);
+       });
+  });
 
-server.on("listening", function () {
-    var address = server.address();
+udpserver.on("listening", function () {
+    const address = udpserver.address();
     console.log(">  Listening on " + address.address + ":" + address.port);
 });
+udpserver.bind(forzaPort, HOST);
 
-
-process.on("SIGINT", function () {
-    console.log("\n" + "> Exiting....");
-    process.exit();
+wss.on('connection', (ws) => {
+    console.log('Client connected');
+    ws.on('close', () => console.log('Client disconnected'));
 });
 
