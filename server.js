@@ -1,5 +1,5 @@
 'use strict';
-const forzaPort = process.env.PORT;
+const forzaPort = process.env.PORT || 80;
 const HOST = "0.0.0.0";
 
 const dgram = require("dgram");
