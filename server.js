@@ -8,11 +8,9 @@ var http = require('http'); // Import Node.js core module
 
 var server2 = http.createServer(function (req, res) {   //create web server
     if (req.url == '/') { //check the URL of the current request
-
-    server.on("listening", function () {
-        var address = server.address();
-        console.log(">  Listening on " + address.address + ":" + address.port);
-    });
+        res.write('test');
+        res.end();
+  
 
     }
     let forza_data = [
@@ -201,11 +199,16 @@ var server2 = http.createServer(function (req, res) {   //create web server
         forza_data[0].NormalDrivingLine = message.readUInt8(309 + bufferOffset);
         forza_data[0].NormalAiBrakeDifference = message.readUInt8(310 + bufferOffset);
     }
+    
+      server.on("listening", function () {
+        var address = server.address();
+        console.log(">  Listening on " + address.address + ":" + address.port);
+    });
 
     server.on("message", function (message, remote) {
         dataParser(message);
         if (forza_data[0].isRaceOn) {
-                document.getElementById("data").innerHTML = ("\x1b[31m", "RPM : " + parseInt(forza_data[0].CurrentEngineRpm) + " | Gear: " + forza_data[0].Gear + " | Speed: " + parseInt((forza_data[0].Speed) * (60 * 60) / 1000) + "km/h | Steer: " + forza_data[0].Steer);
+                console.log("\x1b[31m", "RPM : " + parseInt(forza_data[0].CurrentEngineRpm) + " | Gear: " + forza_data[0].Gear + " | Speed: " + parseInt((forza_data[0].Speed) * (60 * 60) / 1000) + "km/h | Steer: " + forza_data[0].Steer);
         }
     });
 
