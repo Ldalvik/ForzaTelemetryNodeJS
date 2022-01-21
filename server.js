@@ -1,4 +1,4 @@
-'use strict';
+
 const forzaPort = process.env.PORT || 443;
 const HOST = "localhost";
 
