@@ -1,6 +1,6 @@
 
-const forzaPort = process.env.PORT || 443;
-const HOST = "localhost";
+const forzaPort = process.env.PORT || 5300;
+const HOST = "0.0.0.0";
 
 const dgram = require("dgram");
 const udpserver = dgram.createSocket("udp4");
