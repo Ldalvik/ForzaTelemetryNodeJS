@@ -1,6 +1,6 @@
 'use strict';
 const forzaPort = process.env.PORT || 80;
-const HOST = "0.0.0.0";
+const HOST = "localhost";
 
 const dgram = require("dgram");
 const udpserver = dgram.createSocket("udp4");
