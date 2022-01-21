@@ -1,22 +1,21 @@
 {
-  "name": "forza-telemetry",
+  "name": "websockets-vanilla",
   "version": "1.0.0",
-  "main": "server.js",
+  "engines": {
+    "node": "12.x"
+  },
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Ldalvik/ForzaTelemetryNodeJS.git"
-  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Ldalvik/ForzaTelemetryNodeJS/issues"
-  },
-  "homepage": "https://github.com/Ldalvik/ForzaTelemetryNodeJS#readme",
   "dependencies": {
-        "express": "^4.16.4"
+    "bufferutil": "^4.0.6",
+    "express": "^4.17.2",
+    "utf-8-validate": "^5.0.8",
+    "ws": "^7.5.6"
   }
 }
