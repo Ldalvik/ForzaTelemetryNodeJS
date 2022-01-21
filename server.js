@@ -218,5 +218,3 @@ var server2 = http.createServer(function (req, res) {   //create web server
         console.log("\n" + "> Exiting....");
         process.exit();
     });
-</script>
-</html>
