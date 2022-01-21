@@ -17,5 +17,6 @@
   },
   "homepage": "https://github.com/Ldalvik/ForzaTelemetryNodeJS#readme",
   "dependencies": {
+        "express": "^4.16.4"
   }
 }
