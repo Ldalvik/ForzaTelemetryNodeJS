@@ -1,6 +1,6 @@
 'use strict';
-const forzaPort = process.env.PORT || 80;
-const HOST = "localhost";
+const forzaPort = process.env.PORT || 443;
+const HOST = "forza-telemetry.herokuapp.com";
 
 const dgram = require("dgram");
 const udpserver = dgram.createSocket("udp4");
