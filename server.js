@@ -1,19 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<p id=data"></p>
-</body>
-<script>
-    const PORT = 5300;
-    const HOST = "0.0.0.0";
+const PORT = 5300;
+const HOST = "0.0.0.0";
 
-    const dgram = require("dgram");
-    const server = dgram.createSocket("udp4");
+const dgram = require("dgram");
+const server = dgram.createSocket("udp4");   
 
+var http = require('http'); // Import Node.js core module
+
+var server2 = http.createServer(function (req, res) {   //create web server
+    if (req.url == '/') { //check the URL of the current request
+
+    server.on("listening", function () {
+        var address = server.address();
+        console.log(">  Listening on " + address.address + ":" + address.port);
+    });
+
+    }
     let forza_data = [
         {
             //buf
@@ -110,11 +111,6 @@
     //FH4/FH5 buffer offset
 
     const bufferOffset = 12;
-
-    server.on("listening", function () {
-        var address = server.address();
-        console.log(">  Listening on " + address.address + ":" + address.port);
-    });
 
     function dataParser(message) {
         forza_data[0].isRaceOn = message.readInt32LE(0) ? true : false;
